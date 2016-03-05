@@ -26,7 +26,7 @@
 
 1. Construct a list from 1 to 10
 
-1. Construct a list 1.0 to 2.0 with step size 0.25
+1. Construct a list from 1.0 to 2.0 with step size 0.25
 
 1. Construct a list from 10 to 1
 

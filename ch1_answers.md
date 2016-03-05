@@ -57,7 +57,7 @@ Prelude Data.Ratio> 1%4 + 1%4
 
 ## 6
 
-Enclose the `+` operator between parentheses followed by the operands.
+Enclose the `+` operator in parentheses followed by the operands.
 
 For example:
 
@@ -80,7 +80,8 @@ Prelude> 2 +2
 ```
 
 What this means is that `2 + -3` is equivalent to `2 + - 3`. For that reason
-the interpreter complains two infix operators are being in the same expression.
+the interpreter complains two infix operators exist next to each other in the
+same expression.
 
 To fix the expression the negative number must be enclosed in parentheses:
 
@@ -169,7 +170,7 @@ Prelude> ((1 + 2) - 3) + 1
 1
 ```
 
-The `^` operator has right associatity:
+The `^` operator has right associativity:
 
 ```haskell
 Prelude> :info (^)
@@ -188,8 +189,7 @@ Prelude> 2^(1^(2^3))
 
 ## 10
 
-To define a constant in `ghci` use the `let` contructor. For example, to define
-the `e`:
+To define a constant use the `let` constructor. For example, to define the `e`:
 
 ```haskell
 Prelude> let e = exp 1
@@ -220,7 +220,7 @@ Because lists must have all elements of the same type.
 
 ## 13
 
-The easieast and shortest way is to use the enumeration notation:
+The easiest and shortest way is to use the enumeration notation:
 
 ```haskell
 Prelude> [1..10]
@@ -268,7 +268,7 @@ Note that the cost of this operation is equal to the size of the first list.
 
 ## 17
 
-The `:` operator adds a element to the beggining of a list:
+The `:` operator adds a element to the beginning of a list:
 
 ```haskell
 Prelude> 1 : [2,3]
@@ -288,7 +288,7 @@ Prelude> "My String"
 
 ## 19
 
-Characters are defined with a single character between single quotes:
+A characters is defined by having a character between single quotes:
 
 ```haskell
 Prelude> 'a'
@@ -351,7 +351,7 @@ main = interact lineCount
 ## 24
 
 ```haskell
--- file: wc.hs
+-- file: cc.hs
 main = interact lineCount
   where lineCount input = show (length input) ++ "\n"
 ```
