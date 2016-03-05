@@ -10,9 +10,11 @@
 
 1. How do you import a module in GHCI?
 
-1. How do you write an addition expression in the prefix form?
+1. How do you write an addition expression in prefix form?
 
 1. Why doesn't the expression `2 + -3` evaluate?
+
+1. Why doesn't the expression `2*-3` evalutate?
 
 1. How do you inspect the associativity and precedence of an operator:
 
@@ -32,11 +34,13 @@
 
 1. Add an element to the beggining of a list
 
-1. Print a character
+1. How do you define a string?
+
+1. How do you define a character?
 
 1. How are string implemeted in haskell?
 
-1. How do you check the type of an expression?
+1. How do you inspect the type of an expression?
 
 1. Write a program to count the lines of a given file
 

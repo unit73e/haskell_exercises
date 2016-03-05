@@ -8,9 +8,9 @@ Glasgow Haskell Compiler
 
 There are three main components:
 
- - ghc is the compiler
- - ghci is the interactive interpreter and debugger
- - runhaskell is a program to run haskell scripts, without needing to compile them
+ - `ghc` is the compiler
+ - `ghci` is the interactive interpreter and debugger
+ - `runhaskell` is a program to run haskell scripts, without needing to compile them
 
 ## 3
 
@@ -29,7 +29,8 @@ Run the following command:
 For example, to set the prompt to `ghci> `:
 
 ```haskell
-:set prompt "ghci >"
+Prelude> :set prompt "ghci> "
+ghci> 
 ```
 
 ## 5
@@ -43,7 +44,15 @@ Run the following command:
 For example, to add the `Data.Ratio` module:
 
 ```haskell
-:module + Data.Ratio
+Prelude> :module + Data.Ratio 
+Prelude Data.Ratio> 
+```
+
+The `Data.Ratio` module adds support to rational numbers:
+
+```haskell
+Prelude Data.Ratio> 1%4 + 1%4
+1 % 2
 ```
 
 ## 6
@@ -53,13 +62,13 @@ Enclose the `+` operator between parentheses followed by the operands.
 For example:
 
 ```haskell
-(+) 2 2
+Prelude> (+) 2 2
+4
 ```
 
 ## 7
 
-An infix operator and its operands do not have to be separated by spaces to
-evaluate:
+An infix operator and its operands do not have to be separated by spaces:
 
 ```haskell
 Prelude> 2+2
@@ -70,8 +79,8 @@ Prelude> 2 +2
 4
 ```
 
-What this means is that `2 + -3` is equivalent to `2 + - 3`. Such expression
-cannot be evaluated.
+What this means is that `2 + -3` is equivalent to `2 + - 3`. For that reason
+the interpreter complains two infix operators are being in the same expression.
 
 To fix the expression the negative number must be enclosed in parentheses:
 
@@ -102,7 +111,7 @@ Execute the following command:
 :info <name>
 ```
 
-For example, to know thei associativity and precedence of the `+` operator:
+For example, to know the associativity and precedence of the `+` operator:
 
 ```haskell
 Prelude> :i (+)
@@ -114,10 +123,10 @@ infixl 6 +
 ```
 
 The last line indicates that indicates that the `+` operator is a left
-associative infix operator with precedence of level 6. A higher number means
-higher precedence.
+associative infix operator with precedence 6. A higher number means higher
+precedence.
 
-Naturaly `*` has a higher precedence than the `+` operator:
+The `*` operator has higher precedence than the `+` operator:
 
 ```haskell
 Prelude> :info (*)
@@ -129,16 +138,38 @@ class Num a where
 infixl 7 *
 ```
 
-Naturally this means the following expressions are equivalent:
+As a result the following operations are equivalent:
 
 ```haskell
-Prelude> 1 + 4 * 4
-17
-Prelude> 1 + (4 * 4)
-17
+Prelude> 1 + 4 * 4 + 2
+19
+Prelude> 1 + (4 * 4) + 2
+19
 ```
 
-The power operator `^` should have right associatity:
+The `-` operator has the same associativity and precedence has the `+`
+operator:
+
+```haskell
+Prelude> :info (-)
+class Num a where
+  ...
+  (-) :: a -> a -> a
+  ...
+  	-- Defined in ‘GHC.Num’
+infixl 6 -
+```
+
+For that reason the following expressions are equivalent:
+
+```haskell
+Prelude> 1 + 2 - 3 + 1
+1
+Prelude> ((1 + 2) - 3) + 1
+1
+```
+
+The `^` operator has right associatity:
 
 ```haskell
 Prelude> :info (^)
@@ -146,18 +177,19 @@ Prelude> :info (^)
 infixr 8 ^
 ```
 
-As a result the following expressions are equivalent:
+So the following expressions are equivalent:
 
 ```haskell
-Prelude> 2^1^2
+Prelude> 2^1^2^3
 2
-Prelude> 2^(1^2)
+Prelude> 2^(1^(2^3))
 2
 ```
 
 ## 10
 
-To define a constant use the `let` contructor. For example, to define the `e`:
+To define a constant in `ghci` use the `let` contructor. For example, to define
+the `e`:
 
 ```haskell
 Prelude> let e = exp 1
@@ -167,7 +199,7 @@ Prelude> e
 
 ## 11
 
-A list is defined by having your data separated by commas enclosed in brackets.
+A list is defined by having data separated by commas and enclosed in brackets.
 For example:
 
 ```haskell
@@ -197,7 +229,8 @@ Prelude> [1..10]
 
 ## 14
 
-Specify the first elements and the interpreter will figure out the sequence:
+Specify the first two elements and the interpreter will figure out the
+remaining elements of the sequence:
 
 ```haskell
 Prelude> [1.0, 1.25..2.0]
@@ -206,8 +239,8 @@ Prelude> [1.0, 1.25..2.0]
 
 ## 15
 
-The first two elements must be specified and the interpreter will figure out
-the sequence:
+The first two elements must be specified when defining a sequence in descending
+order:
 
 ```haskell
 Prelude> [10,9..1]
@@ -231,7 +264,7 @@ Prelude> [1,2,3] ++ [4,5]
 [1,2,3,4,5]
 ```
 
-Note that the cost of this operation is the size of the first list.
+Note that the cost of this operation is equal to the size of the first list.
 
 ## 17
 
@@ -244,7 +277,7 @@ Prelude> 1 : [2,3]
 
 The `:` operator is pronounced "cons" which is short for constructor.
 
-##### Define a string
+## 18
 
 Strings are defined by placing characters between double quotes:
 
@@ -253,7 +286,7 @@ Prelude> "My String"
 "My String"
 ```
 
-## 18
+## 19
 
 Characters are defined with a single character between single quotes:
 
@@ -262,7 +295,7 @@ Prelude> 'a'
 'a'
 ```
 
-## 19
+## 20
 
 String are implemented as a list of characters:
 
@@ -279,7 +312,7 @@ Prelude> "ab" ++ "cd"
 "abcd"
 ```
 
-## 20
+## 21
 
 By executing the command `:type`. For example:
 
@@ -290,9 +323,9 @@ Prelude> :type "abc"
 "abc" :: [Char]
 ```
 
-## 21
+## 22
 
-The program can be implemented as follows:
+The following program should print the number of lines of a file:
 
 ```haskell
 -- file: lc.hs
@@ -307,7 +340,7 @@ $ runhaskell lc.hs < lc.hs
 3
 ```
 
-## 22
+## 23
 
 ```haskell
 -- file: wc.hs
@@ -315,7 +348,7 @@ main = interact lineCount
   where lineCount input = show (length (words input)) ++ "\n"
 ```
 
-## 23
+## 24
 
 ```haskell
 -- file: wc.hs
