@@ -2,48 +2,48 @@
 
 1. What does GHC mean?
 
-1. What are GHC three main components?
+2. What are GHC three main components?
 
-1. Why does `Prelude>` appear when you start GCHI?
+3. Why does `Prelude>` appear when you start GCHI?
 
-1. How do you set the prompt to another value?
+4. How do you import a module in GHCI?
 
-1. How do you import a module in GHCI?
+5. How do you set the prompt to another value?
 
-1. How do you write an addition expression in prefix form?
+6. How do you add two numbers in prefix form?
 
-1. Why doesn't the expression `2 + -3` evaluate?
+7. Why doesn't `2 + -3` result in -1?
 
-1. Why doesn't the expression `2*-3` evalutate?
+8. Why doesn't the expression `2*-3` evalutate?
 
-1. How do you inspect the associativity and precedence of an operator:
+9. How do you inspect the associativity and precedence of an operator:
 
-1. How do you define a constant in GHCI?
+10. How do you define a constant in GHCI?
 
-1. How do you define a list?
+11. How do you define a list?
 
-1. Why doesn't `[1,"a"]` evaluate?
+12. Why doesn't `[1,"a"]` evaluate?
 
-1. Construct a list from 1 to 10
+13. Construct a list from 1 to 10.
 
-1. Construct a list from 1.0 to 2.0 with step size 0.25
+14. Construct a list from 1.0 to 2.0 with step size 0.25.
 
-1. Construct a list from 10 to 1
+15. Construct a list from 10 to 1.
 
-1. Concatenate two lists
+16. Concatenate two lists.
 
-1. Add an element to the beggining of a list
+17. Add an element to the beggining of a list.
 
-1. How do you define a string?
+18. How do you define a string?
 
-1. How do you define a character?
+19. How do you define a character?
 
-1. How are string implemeted in haskell?
+20. How are string implemeted in haskell?
 
-1. How do you inspect the type of an expression?
+21. How do you inspect the type of an expression?
 
-1. Write a program to count the lines of a given file
+22. Write a program to count the lines of a given file.
 
-1. Write a program to count the words of a given file
+23. Write a program to count the words of a given file.
 
-1. Write a program to count the characters of a given file
+24. Write a program to count the characters of a given file.

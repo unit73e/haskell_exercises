@@ -2,7 +2,7 @@
 
 ## 1
 
-Glasgow Haskell Compiler
+Glasgow Haskell Compiler.
 
 ## 2
 
@@ -19,21 +19,6 @@ names of the modules currently in scope. Prelude is a module that is always
 loaded implicitly in any haskell program so it is always in scope.
 
 ## 4
-
-Run the following command:
-
-```haskell
-:set prompt <prompt>
-```
-
-For example, to set the prompt to `ghci> `:
-
-```haskell
-Prelude> :set prompt "ghci> "
-ghci> 
-```
-
-## 5
 
 Run the following command:
 
@@ -55,9 +40,35 @@ Prelude Data.Ratio> 1%4 + 1%4
 1 % 2
 ```
 
+Notice that `Data.Ratio` was added to the prompt because it is in scope.
+
+## 5
+
+Run the following command:
+
+```haskell
+:set prompt <prompt>
+```
+
+For example, to set the prompt to `ghci> `:
+
+```haskell
+Prelude> :set prompt "ghci> "
+ghci> 
+```
+
+Changing the prompt will avoid having a very large prompt when multiple modules
+are loaded. For example:
+
+```haskell
+Prelude> :module Data.Ratio Data.ByteString Data.List 
+Prelude Data.Ratio Data.ByteString Data.List> 
+```
+
 ## 6
 
-Enclose the `+` operator in parentheses followed by the operands.
+To add two number in prefix form we enclose the `+` operator in parentheses
+followed by the operands.
 
 For example:
 
@@ -66,9 +77,13 @@ Prelude> (+) 2 2
 4
 ```
 
+In fact any operator can be written in prefix form.
+
 ## 7
 
-An infix operator and its operands do not have to be separated by spaces:
+Haskell operators are distinguished from other grammar elements by being
+composed of only a special set of symbols. The operator and its operands do not
+have to be seperated by spaces:
 
 ```haskell
 Prelude> 2+2
@@ -79,30 +94,29 @@ Prelude> 2 +2
 4
 ```
 
-What this means is that `2 + -3` is equivalent to `2 + - 3`. For that reason
-the interpreter complains two infix operators exist next to each other in the
-same expression.
+This means is that `2 + -3` is equivalent to `2 + - 3` and the compiler
+complains complains that two infix operators exist next to each other in the
+same line of code.
 
-To fix the expression the negative number must be enclosed in parentheses:
+For the code to return -1 the negative number must be wrapped in parentheses:
 
 ```haskell
-2 + (-3)
+Prelude> 2 + (-3)
+-1
 ```
-
-This makes `-` a unary operator and the expression is correctly evaluated.
 
 ## 8
 
-An operator may have more than one character. This means the expression `2*-3`
-is equivalent to `2 *- 3`. By default the operator `*-` is not defined.
+An operator may have more than one special character. This means the expression
+`2*-3` is equivalent to `2 *- 3`. Since by default the operator `*-` is not
+defined, the compiler returns an error.
 
-To fix the expression the negative number must be enclosed in parentheses:
+For the code to return -6 the negative number must be wrapped in parentheses:
 
 ```haskell
-2+(-3)
+Prelude> 2*(-3)
+-6
 ```
-
-This treats `+` and `-` as separate operators.
 
 ## 9
 
@@ -199,7 +213,7 @@ Prelude> e
 
 ## 11
 
-A list is defined by having data separated by commas and enclosed in brackets.
+A list is defined by having data wrapped in brackets and separated by commas.
 For example:
 
 ```haskell
