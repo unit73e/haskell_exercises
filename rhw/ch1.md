@@ -14,7 +14,7 @@
 
 7. Why doesn't `2 + -3` result in -1?
 
-8. Why doesn't the expression `2*-3` evalutate?
+8. Why doesn't `2*-3` result in -6?
 
 9. How do you inspect the associativity and precedence of an operator:
 
@@ -22,7 +22,7 @@
 
 11. How do you define a list?
 
-12. Why doesn't `[1,"a"]` evaluate?
+12. Why doesn't `[1,"a"]` parse?
 
 13. Construct a list from 1 to 10.
 
