@@ -1,0 +1,13 @@
+Name:          mypretty
+Version:       0.1
+Synopsis:      My pretty printing JSON library
+Description:   A simple pretty printing JSON library
+Author:        Nobody
+Maintainer:    nobody@realworldhaskell.org
+Cabal-Version: >= 1.2
+Build-Type:    Simple
+library
+  Exposed-Modules: Prettify
+                   PrettyJSON
+                   SimpleJSON
+  Build-Depends:   base >= 2.0
