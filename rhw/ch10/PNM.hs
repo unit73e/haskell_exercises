@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString.Lazy.Char8 as L8
 import Data.Char (isSpace)
@@ -39,7 +41,7 @@ getBytes n str =
 
 parseP5 :: L.ByteString -> Maybe (Greymap, L.ByteString)
 parseP5 s =
-  case matchHeader (L8.pack "P5") s of
+  case matchHeader "P5" s of
     Nothing -> Nothing
     Just s1 ->
       case getNat s1 of

@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString.Lazy.Char8 as L8
 import Data.Char (isSpace)
@@ -43,7 +45,7 @@ Just v >>? f = f v
 
 parseP5 :: L.ByteString -> Maybe (Greymap, L.ByteString)
 parseP5 s =
-    matchHeader (L8.pack "P5") s      >>?
+    matchHeader "P5" s                >>?
     \s -> skipSpace ((), s)           >>?
     (getNat . snd)                    >>?
     skipSpace                         >>?
