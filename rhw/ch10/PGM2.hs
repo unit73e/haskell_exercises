@@ -87,7 +87,7 @@ Just v >>? f = f v
 -- if the string is not a PGM
 parseP5 :: L.ByteString -> Maybe (Greymap, L.ByteString)
 parseP5 s =
-    stripPrefix "P5" s                >>?
+    stripPrefix "P5" s                 >>?
     \s -> skipSpaces ((), s)           >>?
     (readNat . snd)                    >>?
     skipSpaces                         >>?
