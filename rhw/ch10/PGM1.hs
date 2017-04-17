@@ -3,7 +3,7 @@
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString.Lazy.Char8 as L8
 import Data.Char (isSpace)
-import System.Environment (getArgs)
+import System.Environment(getArgs)
 import PGM(Graymap(..))
 
 -- | Reads a natural number from the beginning of the string.
@@ -55,14 +55,28 @@ skipSpaces = L8.dropWhile isSpace
 -- | Translates a PGM string into a @Graymap@ or returns @Nothing@
 -- if the string is not a PGM
 parseP5 :: L.ByteString -> Maybe (Graymap, L.ByteString)
-parseP5 s = do
-    s1            <- L.stripPrefix "P5" s
-    (width, s2)   <- readNat (skipSpaces s1)
-    (height, s3)  <- readNat (skipSpaces s2)
-    (maxGray, s4) <- readNat (skipSpaces s3)
-    (_, s5)       <- readBytes 1 s4
-    (bitmap, s6)  <- readBytes (width * height) s5
-    Just (Graymap width height maxGray bitmap, s6)
+parseP5 s =
+  case L.stripPrefix "P5" s of
+    Nothing -> Nothing
+    Just s1 ->
+      case readNat (skipSpaces s1) of
+        Nothing -> Nothing
+        Just (width, s2) ->
+          case readNat (skipSpaces s2) of
+            Nothing -> Nothing
+            Just (height, s3) ->
+              case readNat (skipSpaces s3) of
+                Nothing -> Nothing
+                Just (maxGray, s4)
+                  | maxGray > 255 -> Nothing
+                  | otherwise ->
+                    case readBytes 1 s4 of
+                      Nothing -> Nothing
+                      Just (_, s5) ->
+                        case readBytes (width * height) s5 of
+                          Nothing -> Nothing
+                          Just (bitmap, s6) ->
+                            Just (Graymap width height maxGray bitmap, s6)
 
 main :: IO ()
 main = do
@@ -70,6 +84,5 @@ main = do
   case args of
     [x] -> do
       src <- L.readFile x
-      let image = parseP5 src
-      print image
-    _ -> putStrLn "Usage: PGM2 <image>"
+      print $ parseP5 src
+    _ -> putStrLn "PGM file missing"

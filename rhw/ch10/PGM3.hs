@@ -2,39 +2,67 @@
 
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString.Lazy.Char8 as L8
+import Data.Word (Word8)
 import Data.Char (isSpace)
 import Data.Int (Int64)
 import System.Environment (getArgs)
+import PGM(Graymap(..))
 
+-- | A parse state
 data ParseState = ParseState
-  { string :: L.ByteString
-  , offset :: Int64
+  { string :: L.ByteString -- ^ string to be parsed
+  , offset :: Int64        -- ^ offset of the original string
   } deriving (Show)
 
 newtype Parse a = Parse
   { runParse :: ParseState -> Either String (a, ParseState)
   }
 
+-- | Set a new offset
+modifyOffset :: ParseState -> Int64 -> ParseState
+modifyOffset initState newOffset = initState {offset = newOffset}
+
+-- | Injects a value into a parser
 identity :: a -> Parse a
 identity a = Parse (\s -> Right (a, s))
 
+parseByte :: Parse Word8
+parseByte =
+  getState ==> \initState ->
+    case L.uncons (string initState) of
+      Nothing -> bail "no more input"
+      Just (byte, remainder) -> putState newState ==> \_ -> identity byte
+        where newState = initState {string = remainder, offset = newOffset}
+              newOffset = offset initState + 1
+
+-- | Returns the current parsing state
+getState :: Parse ParseState
+getState = Parse (\s -> Right (s, s))
+
+-- | Replaces the current parsing state
+putState :: ParseState -> Parse ()
+putState s = Parse (\_ -> Right ((), s))
+
+-- | Terminates parsing and returns an error
+bail :: String -> Parse a
+bail err = Parse $ \s -> Left $ "byte offset " ++ show (offset s) ++ ": " ++ err
+
+-- | Chains parsers together
+(==>) :: Parse a -> (a -> Parse b) -> Parse b
+firstParser ==> secondParser = Parse chainedParser
+  where
+    chainedParser initState =
+      case runParse firstParser initState of
+        Left errMessage -> Left errMessage
+        Right (firstResult, newState) ->
+          runParse (secondParser firstResult) newState
+
+-- | Parses a PGM string
 parse :: Parse a -> L.ByteString -> Either String a
 parse parser initState =
   case runParse parser (ParseState initState 0) of
     Left err -> Left err
     Right (result, _) -> Right result
-
--- | A portable grey map (PGM)
-data Greymap = Greymap
-  { greyWidth :: Int
-  , greyHeight :: Int
-  , greyMax :: Int
-  , greyData :: L.ByteString
-  } deriving (Eq)
-
-instance Show Greymap where
-  show (Greymap w h m _) =
-    "Greymap " ++ show w ++ "x" ++ show h ++ " " ++ show m
 
 -- | Return the suffix of the second string if its prefix matches
 -- the entire first string.
@@ -46,10 +74,10 @@ instance Show Greymap where
 -- > stripPrefix "foo" "quux"   == Nothing
 stripPrefix :: L.ByteString -> L.ByteString -> Maybe L.ByteString
 stripPrefix prefix str
-  | prefix `L8.isPrefixOf` str =
-    let afterMagicNumber = L.drop (L.length prefix) str
-    in Just $ L8.dropWhile isSpace afterMagicNumber
+  | prefix `L8.isPrefixOf` str = Just suffix
   | otherwise = Nothing
+  where
+    suffix = L.drop (L.length prefix) str
 
 -- | Reads a natural number from the beginning of the string.
 -- A natural number is a positive integer (does not include zero).
@@ -87,35 +115,27 @@ readBytes n str =
        then Nothing
        else Just both
 
--- | Removes the prefix spaces from the right element of the tuple.
+-- | Returns the given string without prefixed spaces.
 --
 -- Examples:
--- > skipSpaces ('a',"   a")     == Just ('a',"a")
--- > skipSpaces ('a',"   a    ") == Just ('a',"a    ")
--- > skipSpaces ('a',"        ") == Just ('a',"")
-skipSpaces :: (a, L.ByteString) -> Maybe (a, L.ByteString)
-skipSpaces (a, s) = Just (a, L8.dropWhile isSpace s)
+-- > skipSpaces "          foo" == "foo"
+-- > skipSpaces "\t\n\r\f\vfoo" == "foo"
+-- > skipSpaces "bar          " == "bar          "
+-- > skipSpaces "             " == ""
+skipSpaces :: L.ByteString -> L.ByteString
+skipSpaces = L8.dropWhile isSpace
 
--- | Compose two actions, passing the value of produced by the first
--- as an argument of the second.
-(>>?) :: Maybe a -> (a -> Maybe b) -> Maybe b
-Nothing >>? _ = Nothing
-Just v >>? f = f v
-
--- | Translates a PGM string into a @Greymap@ or returns @Nothing@
+-- | Translates a PGM string into a @Graymap@ or returns @Nothing@
 -- if the string is not a PGM
-parseP5 :: L.ByteString -> Maybe (Greymap, L.ByteString)
-parseP5 s =
-    stripPrefix "P5" s                >>?
-    \s -> skipSpaces ((), s)           >>?
-    (readNat . snd)                    >>?
-    skipSpaces                         >>?
-    \(width, s) ->   readNat s         >>?
-    skipSpaces                         >>?
-    \(height, s) ->  readNat s         >>?
-    \(maxGrey, s) -> readBytes 1 s     >>?
-    (readBytes (width * height) . snd) >>?
-    \(bitmap, s) -> Just (Greymap width height maxGrey bitmap, s)
+parseP5 :: L.ByteString -> Maybe (Graymap, L.ByteString)
+parseP5 s = do
+    s1            <- stripPrefix "P5" s
+    (width, s2)   <- readNat (skipSpaces s1)
+    (height, s3)  <- readNat (skipSpaces s2)
+    (maxGray, s4) <- readNat (skipSpaces s3)
+    (_, s5)       <- readBytes 1 s4
+    (bitmap, s6)  <- readBytes (width * height) s5
+    Just (Graymap width height maxGray bitmap, s6)
 
 main :: IO ()
 main = do
@@ -125,4 +145,4 @@ main = do
       src <- L.readFile x
       let image = parseP5 src
       print image
-    _ -> putStrLn "Usage: PNM <image>"
+    _ -> putStrLn "Usage: PGM3 <image>"
