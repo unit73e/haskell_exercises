@@ -1,5 +1,7 @@
 # Chapter 15
 
+## Lifting
+
 Let's use an association list to fill the following data structure:
 
 ```haskell
@@ -110,7 +112,7 @@ liftM :: (Monad m) => (a1 -> r) -> m a1 -> m r
 liftM f m1 = do { x1 <- m1; return (f x1) }
 ```
 
-In other words `liftM` executes a given function over the value of a given
+In other words `liftM` executes a given function on the value of a given
 monad and injects the result into a monad of the same type. A simple example
 should clarify this.
 
@@ -121,9 +123,9 @@ Just 2
 
 The `(+1)` function is executed over `1` and the result is injected into
 `Just`. In `apReview` case `MovieReview` is the function and the monad is
-`Maybe` since that's what `lookup1` returns.
+`Maybe`, since that's what `lookup1` returns.
 
-```
+```haskell
 ghci> :t MovieReview
 MovieReview :: String -> String -> String -> MovieReview
 
@@ -132,7 +134,24 @@ MovieReview `liftM` lookup1 "title" []
   :: Maybe (String -> String -> MovieReview)
 ```
 
-Since `MovieReview` is only executed over one argument the result will be a
-partial function, which will be injected into a `Maybe` monad. Namely title has
-been passed to `MovieReview` but user and review have not. That's were the `ap`
-function comes in.
+Since `MovieReview` requires four arguments but it is only executed over one
+argument, the result will be a partial function, which will then be injected
+into a `Maybe` monad. Namely title has been passed to `MovieReview` but user
+and review have not. That's were the `ap` function comes in.
+
+```haskell
+ap :: (Monad m) => m (a -> b) -> m a -> m b
+ap m1 m2 = do { x1 <- m1; x2 <- m2; return (x1 x2) }
+```
+
+The `ap` function promotes function application. It does almost the same as
+`liftM` but assumes the function is stored in a monad instead of passing the
+function directly. The `ap` function takes the function in the first monad and
+executes using the value of the second monad as the argument, and returns
+injects the result into a monad of the same type. The result of the first line
+is the continuation of the `MovieReview` stored into a `Maybe` monad and that's
+the `ap` function is required.
+
+## Monad Plus
+
+
